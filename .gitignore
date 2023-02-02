@@ -1,0 +1,8 @@
+/dataCsv/
+/out_put/
+/.idea/
+/appFiles/templates/test.html
+/venv/
+/appFiles/configTemp/appLoadConfig/personalAccount.json
+/__pycache__/
+/appFiles/__pycache__/

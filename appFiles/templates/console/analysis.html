@@ -1,0 +1,355 @@
+{% extends 'console/base.html' %}
+{% block title %}Analysis{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='css/analysis.css') }}" type="text/css" rel="stylesheet"
+          xmlns="http://www.w3.org/1999/html">
+{% endblock %}
+{% block contain %}
+    <div class="row" style="height: 100%">
+        <div class="col-lg-6" style="height: 100%">
+            <div class="overflow-auto base-box white-background-ele" id="select_container" style="height: 50%;">
+                <form class="form-inline inner-box" id="add-select-option">
+                    <button class="btn btn-outline-primary inner-item" type="button"
+                            onclick="addChild('select-column')">
+                        计算
+                        <i class="bi bi-plus-circle"></i>
+                    </button>
+                </form>
+                <form class="form-inline inner-box hover-condition" id="select-column">
+                    <label for="select-column-sel">Col</label>
+                    <select class="form-control form-control-sm inner-item" id="select-column-sel"
+                            onchange="delGroupOption(this)">
+                    </select>
+                    <label for="group-func">Reduce</label>
+                    <select class="form-control form-control-sm inner-item" id="group-func"
+                            onclick="getGroupFunc(this)">
+
+                    </select>
+                    <label for="relation-func">Cal</label>
+                    <select class="form-control form-control-sm inner-item" id="relation-func">
+
+                    </select>
+                    <label for="select-rel-column-sel">Col </label>
+                    <select class="form-control form-control-sm inner-item" id="select-rel-column-sel"
+                            onchange="delGroupOption(this, false)">
+                    </select>
+                    <label for="group-rel-func">Reduce</label>
+                    <select class="form-control form-control-sm inner-item" id="group-rel-func"
+                            onclick="getGroupFunc(this,false)">
+                    </select>
+                </form>
+            </div>
+            <div class="overflow-auto base-box white-background-ele" id="condition_container" style="height: 20%">
+                <form class="form-inline inner-box" id="add-condition-option">
+                    <button class="btn btn-outline-primary inner-item" type="button"
+                            onclick="addChild('condition-column')">
+                        筛选
+                        <i class="bi bi-plus-circle"></i>
+                    </button>
+                </form>
+                <form class="form-inline inner-box hover-condition" id="condition-column">
+                    <label for="condition-column-sel">Condition Col</label>
+                    <select class="form-control form-control-sm inner-item" id="condition-column-sel">
+                    </select>
+                    <label for="condition-func">Type</label>
+                    <select class="form-control form-control-sm inner-item" id="condition-func" onclick="">
+
+                    </select>
+                    <label for="condition-args">args</label>
+                    <input class="form-control form-control-sm inner-item" id="condition-args">
+
+                </form>
+            </div>
+            <div class="overflow-auto base-box white-background-ele" id="group_container" style="height: 20%">
+                <form class="form-inline inner-box" id="add-group-option">
+                    <button class="btn btn-outline-primary inner-item" type="button"
+                            onclick="addChild('group-column')">
+                        分组
+                        <i class="bi bi-plus-circle"></i>
+                    </button>
+                </form>
+                <form class="form-inline inner-box hover-condition" id="group-column">
+                    <label for="group-column-sel">Group</label>
+                    <select class="form-control form-control-sm inner-item" id="group-column-sel">
+                    </select>
+
+                </form>
+            </div>
+            <button class="btn btn-outline-danger" type="button" style="float: right;margin: 10px"
+                    onclick="finalSubmit()">查询
+            </button>
+        </div>
+
+        <div class="col-lg-6" style="height: 100%">
+            <div class="white-background-ele base-box" style="height: 45%" id="echarts-box">
+            </div>
+
+            <div class="echart-container white-background-ele base-box" style="height: 55%">
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block buttonscript %}
+    {{ super() }}
+    {% block jsvar %}
+        <script type="text/javascript">
+            let child_id = {
+                'select-column': 1,
+                'condition-column': 1,
+                'group-column': 1
+            };
+            let analysis_type = 'UserAttr'
+        </script>
+    {% endblock %}
+
+    <script type="text/javascript">
+
+
+        function addChild(nameofType) {
+            let dom = document.getElementById(nameofType);
+            let copy_dom = document.createElement('form');
+            copy_dom.setAttribute('id', `${nameofType}-` + child_id[nameofType]);
+            copy_dom.setAttribute('class', 'form-inline inner-box');
+            copy_dom.innerHTML = dom.innerHTML;
+            child_id[nameofType] += 1;
+            copy_dom.innerHTML += '<i class="bi bi-x-circle" onclick="delChild(this)"></i>';
+            dom.parentNode.appendChild(copy_dom);
+
+        }
+
+        function delChild(obj) {
+            let dom = obj.parentNode;
+            dom.remove();
+        }
+
+        function delGroupOption(obj = null, main = true) {
+            let dom = obj.parentNode;
+            let group_dom;
+            if (main) {
+                group_dom = dom.getElementsByTagName('select')[1];
+            } else {
+                group_dom = dom.getElementsByTagName("select")[4];
+            }
+
+            group_dom.innerHTML = null;
+        }
+
+        function getGroupFunc(obj = null, main = true) {
+            if (obj.childElementCount !== 0) {
+                return
+            }
+            let dom = obj.parentNode;
+            let column_id;
+            if (main) {
+                column_id = dom.getElementsByTagName('select')[0].value;
+            } else {
+                column_id = dom.getElementsByTagName('select')[3].value;
+            }
+
+            let xhr = new XMLHttpRequest();
+            xhr.open('get', `/sql_mapper/columns/group_func/${column_id}`, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.status === 200 && xhr.readyState === 4) {
+                    if (xhr.responseText === 'failed') {
+                        window.alert('无效数据');
+                        return;
+                    }
+                    let func_list = JSON.parse(xhr.responseText);
+                    for (let i = 0; i < func_list.length; i++) {
+                        obj.innerHTML += `<option>${func_list[i]}</option>`;
+                    }
+                }
+            }
+            xhr.send();
+        }
+
+        function getColumnsFuncs() {
+            let column_xhr = new XMLHttpRequest();
+            column_xhr.open('get', '{{ url_for('sql_mapper.columns_type') }}' + `/${analysis_type}`, false);
+
+
+            let data;
+            column_xhr.onreadystatechange = function () {
+                if (column_xhr.status === 200 && column_xhr.readyState === 4) {
+                    data = JSON.parse(column_xhr.responseText);
+                }
+            }
+            column_xhr.send();
+
+            let condition_xhr = new XMLHttpRequest();
+            condition_xhr.open('get', '{{ url_for("sql_mapper.all_column_condition_type") }}', true);
+            condition_xhr.onreadystatechange = function () {
+                if (condition_xhr.status === 200 && condition_xhr.readyState === 4) {
+                    let dom = document.getElementById('condition-func');
+                    let conditions = JSON.parse(condition_xhr.responseText);
+                    for (let i = 0; i < conditions.length; i++) {
+                        dom.innerHTML += `<option>${conditions[i]}</option>`;
+                    }
+                }
+            }
+            condition_xhr.send();
+
+            let relation_xhr = new XMLHttpRequest();
+            relation_xhr.open('get', '{{ url_for("sql_mapper.all_column_relation_func") }}', true);
+            relation_xhr.onreadystatechange = function () {
+                if (relation_xhr.status === 200 && relation_xhr.readyState === 4) {
+                    let dom = document.getElementById('relation-func');
+                    let relations = JSON.parse(relation_xhr.responseText);
+                    for (let i = 0; i < relations.length; i++) {
+                        dom.innerHTML += `<option>${relations[i]}</option>`;
+                    }
+                }
+            }
+            relation_xhr.send();
+
+
+            let column_select_dom = document.getElementById('select-column-sel');
+            let column_select_rel_dom = document.getElementById('select-rel-column-sel');
+            let column_condition_dom = document.getElementById('condition-column-sel');
+            let column_group_dom = document.getElementById('group-column-sel');
+            for (let i = 0; i <= data.length; i++) {
+                if (i === 0) {
+                    let ele = data[i];
+                    column_select_dom.innerHTML += `<option value="0" selected></option>`;
+                    column_select_rel_dom.innerHTML += `<option value="0" selected></option>`;
+                    column_condition_dom.innerHTML += `<option value="0" selected></option>`;
+                    column_group_dom.innerHTML += `<option value="0" selected></option>`;
+                } else {
+                    let ele = data[i - 1];
+                    column_select_dom.innerHTML += `<option value="${ele['column_id']}">${ele['column_name']}</option>`;
+                    column_select_rel_dom.innerHTML += `<option value="${ele['column_id']}">${ele['column_name']}</option>`;
+                    column_condition_dom.innerHTML += `<option value="${ele['column_id']}">${ele['column_name']}</option>`;
+                    column_group_dom.innerHTML += `<option value="${ele['column_id']}">${ele['column_name']}</option>`;
+                }
+            }
+        }
+
+        function finalSubmit() {
+            let formData = {"select": [], "target_table": analysis_type, "where": [], "group_by": []};
+            let select_box = document.getElementById('select_container').getElementsByTagName('form');
+            let condition_box = document.getElementById('condition_container').getElementsByTagName('form');
+            let group_box = document.getElementById('group_container').getElementsByTagName('form');
+            for (let i = 0; i < select_box.length; i++) {
+                if (select_box[i].id.match(/select-column-?\d*/g)) {
+                    let item = {};
+                    let select_column_sel = select_box[i].getElementsByTagName('select')[0].value;
+                    if (select_column_sel === null || select_column_sel === '0') {
+                        continue;
+                    }
+                    let group_func = select_box[i].getElementsByTagName('select')[1].value;
+
+                    item['column'] = Number(select_column_sel);
+                    item['group_func'] = group_func === null || group_func === '' ? 'count' : group_func;
+
+                    let relation_func = select_box[i].getElementsByTagName('select')[2].value;
+                    if (relation_func === '' || relation_func === null) {
+                        formData['select'].push(item);
+                        continue;
+                    }
+                    let select_rel_column_sel = select_box[i].getElementsByTagName('select')[3].value;
+                    let group_rel_func = select_box[i].getElementsByTagName('select')[4].value;
+
+                    item['rel_column'] = Number(select_rel_column_sel);
+                    item['rel_group_func'] = group_rel_func;
+                    item['relation_func'] = relation_func;
+
+                    formData['select'].push(item);
+                }
+            }
+            for (let i = 0; i < condition_box.length; i++) {
+                if (condition_box[i].id.match(/condition-column-?\d*/g)) {
+                    let item = {};
+                    let condition_column_sel = condition_box[i].getElementsByTagName('select')[0].value;
+                    if (condition_column_sel === null || condition_column_sel === '0') {
+                        continue;
+                    }
+                    let condition_func = condition_box[i].getElementsByTagName('select')[1].value;
+                    let condition_args = condition_box[i].getElementsByTagName("input")[0].value;
+
+                    item['column'] = Number(condition_column_sel);
+                    item['condition_type'] = condition_func;
+                    item['condition'] = condition_args;
+
+                    formData['where'].push(item);
+                }
+            }
+
+            for (let i = 0; i < group_box.length; i++) {
+                if (group_box[i].id.match(/group-column-?\d*/g)) {
+                    let group_column = group_box[i].getElementsByTagName("select")[0].value;
+                    if (group_column === null || group_column === '0') {
+                        continue
+                    }
+
+                    formData['group_by'].push(Number(group_column));
+                }
+            }
+
+            let xhr = new XMLHttpRequest();
+
+            xhr.open('post', '{{ url_for("sql_mapper.mapper_executor") }}', true);
+            xhr.setRequestHeader('Content-type', 'application/json');
+            xhr.onreadystatechange = function () {
+                if (xhr.status === 200 && xhr.readyState === 4) {
+                    let resp = JSON.parse(xhr.responseText);
+                    taskResult(resp['task_id']);
+                }
+            }
+            xhr.send(JSON.stringify(formData));
+        }
+
+
+        function taskResult(task_id, get_result = false, times = 0) {
+            let xhr = new XMLHttpRequest();
+            let this_time = times + 1;
+            if (this_time === 1) {
+                let box = document.getElementById('echarts-box');
+                box.innerHTML = `<div class="spinner-border" role="status" style="position: center">
+                                <span class="sr-only">Loading...</span></div>`
+            }
+            if (this_time >= 15) {
+                console.log('15秒无结果 程序退出');
+                let box = document.getElementById('echarts-box');
+                box.innerHTML = null;
+                return;
+            }
+            let url_arg = get_result ? 'mapper_result' : 'mapper_status';
+
+            xhr.open('get', `/sql_mapper/mapper/${url_arg}/${task_id}`, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.status === 200 && xhr.readyState === 4) {
+                    let xhr_resp = JSON.parse(xhr.responseText);
+                    if (xhr_resp['status'] === 'SUCCESS' && get_result === false) {
+                        {# 获取到执行成功消息，自调用绘图模式 #}
+                        taskResult(task_id, true, this_time);
+                    } else if (get_result === true) {
+                        {# 获取结果并绘图 #}
+                        let data = JSON.parse(xhr.responseText);
+                        let _dom = document.getElementById('echarts-box');
+                        _dom.innerHTML = null;
+                        let chart_dom = document.createElement('div');
+                        chart_dom.setAttribute('class', 'full-fill-box');
+                        _dom.appendChild(chart_dom);
+                        let _myCharts = echarts.init(chart_dom);
+                        _myCharts.setOption(data);
+
+
+                    } else {
+                        {# 未获取到执行成功信息， 计时器+1，继续自调用 #}
+                        setTimeout(taskResult, 1000, task_id, false, this_time);
+                    }
+                }
+            }
+            xhr.send();
+        }
+
+        {# 获取页面数据 #}
+        getColumnsFuncs();
+
+
+    </script>
+{% endblock %}

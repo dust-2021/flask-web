@@ -1,0 +1,42 @@
+{
+  "data_config": {
+    "columns_group_funcs": {
+      "0": [
+        "count",
+        "count_distinct"
+      ],
+      "1": [
+        "count",
+        "count_distinct",
+        "sum",
+        "avg",
+        "max",
+        "min",
+        "std"
+      ],
+      "2": [
+        "count",
+        "count_distinct",
+        "max",
+        "min"
+      ]
+    },
+    "columns_relationship_funcs": [
+      "",
+      "+",
+      "-",
+      "*",
+      "/"
+    ],
+    "columns_condition_types": [
+      "=",
+      ">",
+      "<",
+      ">=",
+      "<=",
+      "in",
+      "not in",
+      "regexp"
+    ]
+  }
+}

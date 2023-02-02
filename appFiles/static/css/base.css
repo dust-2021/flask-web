@@ -1,0 +1,110 @@
+/*@font-face {*/
+/*    font-family: custom_font1;*/
+/*    src: url("/static/font/font_1.ttf");*/
+/*}*/
+
+@font-face {
+    font-family: custom_font2;
+    src: url("font/NotoSansSC-Medium.otf");
+}
+
+html {
+    font-family: custom_font2, Serif, serif;
+    font-weight: 900;
+    height: 100%;
+    text-align: center;
+}
+
+body {
+    font-family: custom_font2, Serif, serif;
+    height: 100%;
+    scroll-behavior: auto;
+    overflow-x: hidden;
+}
+
+.main-background-ele {
+    background-color: rgb(245, 245, 245);
+}
+
+.white-background-ele {
+    background-color: white;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+
+a {
+    text-decoration: none;
+    text-align: center;
+
+}
+
+select {
+    appearance: none;
+    min-width: 32px;
+    text-align: center;
+}
+
+
+a:hover {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.collapse-li {
+    background-color: rgb(230, 230, 230);
+}
+
+td {
+    text-align: left;
+}
+
+.dynamic-a:hover {
+    background-color: rgb(245, 245, 245);
+}
+
+.base-box {
+    padding: 15px;
+    height: 100%;
+    width: 100%;
+    border: 1px black;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px 1px rgb(220, 220, 220);
+}
+
+.full-fill-box {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.head-brand-box {
+    height: 100%;
+    padding: 5px;
+    margin: 0;
+    text-align: center;
+    text-decoration: none;
+}
+
+.nav-anchor {
+    text-decoration: none;
+    text-align: center;
+}
+
+.red-point {
+    position: relative;
+}
+
+.red-point::before {
+    content: " ";
+    border: 3px solid red;
+    border-radius: 3px;
+    position: absolute;
+    z-index: 1000;
+    right: -4px;
+    top: 0;
+    /*margin-right: -5px;*/
+    /*margin-top: -5px;*/
+}

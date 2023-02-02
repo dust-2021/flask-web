@@ -1,0 +1,26 @@
+{
+  "redis_conf": {
+    "host": "127.0.0.1",
+    "password": null,
+    "port": 6379
+  },
+  "mysql_conf": {
+    "host": "127.0.0.1",
+    "username": "",
+    "password": ""
+  },
+  "redis_local_conf": {
+    "host": "127.0.0.1",
+    "password": null,
+    "port": 6379
+  },
+  "mysql_local_conf": {
+    "host": "127.0.0.1",
+    "username": "",
+    "password": ""
+  },
+  "comment": {"redis_conf": "session、celery、数据缓存的redis地址 加local为本地配置",
+    "mysql_conf": "存储后台数据的MySQL配置"
+
+  }
+}

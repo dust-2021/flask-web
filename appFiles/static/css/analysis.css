@@ -1,0 +1,19 @@
+.inner-box {
+    padding: 5px;
+}
+
+.inner-item {
+    margin-left: 10px;
+    margin-right: 10px;
+
+}
+
+.hover-condition:hover {
+    background-color: rgb(245, 245, 245);
+    border: 1px darkgray solid;
+    border-radius: 3px;
+}
+
+.full-width {
+    width: 100%;
+}

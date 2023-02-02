@@ -1,0 +1,91 @@
+{
+  "app_env": "development",
+  "app_configs": {
+    "app_secret_key": "dust2022",
+    "session_type": "redis",
+    "session_mem": "local",
+    "permanent_session_lifetime": 86400,
+    "redis_expire": 36000,
+    "scheduler_timezone": "Asia/Shanghai",
+    "root_user": "root",
+    "root_password": "064735",
+    "sqlalchemy_mem": "local",
+    "sqlalchemy_connector": "pymysql",
+    "sqlalchemy_database": "flask_web",
+    "data_database": "web_data",
+    "sqlalchemy_pool_size": 8,
+    "sqlalchemy_pool_recycle": 1800,
+    "mapper_result_redis_lifetime": 1800
+  },
+  "app_test_configs": {
+    "app_secret_key": "dust2022",
+    "session_type": "redis",
+    "session_mem": "local",
+    "permanent_session_lifetime": 86400,
+    "redis_expire": 36000,
+    "scheduler_timezone": "Asia/Shanghai",
+    "root_user": "root",
+    "root_password": "064735",
+    "sqlalchemy_mem": "local",
+    "sqlalchemy_connector": "pymysql",
+    "sqlalchemy_database": "flask_web",
+    "data_database": "web_data",
+    "sqlalchemy_pool_size": 8,
+    "sqlalchemy_pool_recycle": 1800,
+    "mapper_result_redis_lifetime": 1800
+  },
+  "app_development_configs": {
+    "app_secret_key": "dust2022",
+    "session_type": "redis",
+    "session_mem": "local",
+    "permanent_session_lifetime": 86400,
+    "redis_expire": 36000,
+    "scheduler_timezone": "Asia/Shanghai",
+    "root_user": "root",
+    "root_password": "064735",
+    "sqlalchemy_mem": "local",
+    "sqlalchemy_connector": "pymysql",
+    "sqlalchemy_database": "flask_web",
+    "data_database": "web_data",
+    "sqlalchemy_pool_size": 8,
+    "sqlalchemy_pool_recycle": 1800,
+    "mapper_result_redis_lifetime": 1800
+  },
+  "app_production_configs": {
+    "app_secret_key": "dust2022",
+    "session_type": "redis",
+    "session_mem": "remote",
+    "permanent_session_lifetime": 86400,
+    "redis_expire": 36000,
+    "scheduler_timezone": "Asia/Shanghai",
+    "root_user": "root",
+    "root_password": "064735",
+    "sqlalchemy_mem": "remote",
+    "sqlalchemy_connector": "pymysql",
+    "sqlalchemy_database": "flask_web",
+    "data_database": "web_data",
+    "sqlalchemy_pool_size": 8,
+    "sqlalchemy_pool_recycle": 1800,
+    "mapper_result_redis_lifetime": 1800
+  },
+  "env_values": {
+  },
+  "smtp_config": {
+    "support_type": [
+    ],
+    "single_config": [
+      {
+        "type_name": "",
+        "smtp_server_host": "",
+        "email_addr": "",
+        "email_pw": ""
+      },
+      {
+        "type_name": "",
+        "smtp_server_host": "",
+        "email_addr": "",
+        "email_pw": ""
+      }
+    ]
+  }
+}

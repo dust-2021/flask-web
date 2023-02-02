@@ -1,0 +1,165 @@
+{% extends 'console/base.html' %}
+{% block title %}数据设置
+{% endblock %}
+
+{% block contain %}
+    <div class="row full-fill-box">
+        <div class="base-box white-background-ele overflow-auto" style="width: 100%;padding: 30px">
+            <table class="table table-hover" id="columns_table">
+                <caption>
+                    数据设置
+                </caption>
+                <thead>
+                <tr>
+                    <th>
+                        源数据库
+                    </th>
+                    <th>
+                        表名
+                    </th>
+                    <th>
+                        数据名称
+                    </th>
+                    <th>
+                        数据昵称
+                    </th>
+                    <th>
+                        源数据类型
+                    </th>
+                    <th>
+                        更改类型
+                    </th>
+                    <th>
+                        标记
+                    </th>
+                    <th>
+                        修改
+                    </th>
+                </tr>
+                </thead>
+                <tbody id="t-body">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block buttonscript %}
+    {{ super() }}
+    <script type="text/javascript">
+        function getColumns() {
+            let xhr = new XMLHttpRequest();
+            let the_dom = document.getElementById('t-body');
+            let columns;
+
+            xhr.open('get', '/sql_mapper/columns', true);
+            xhr.onreadystatechange = function () {
+                if (xhr.status === 200 && xhr.readyState === 4) {
+                    columns = JSON.parse(xhr.responseText);
+                    for (let i = 0; i < columns.length; i++) {
+                        let ele = columns[i];
+
+                        let column_id = ele['column_id'];
+
+                        let table_row = document.createElement('tr');
+
+                        let database_name = document.createElement('td');
+                        database_name.innerHTML = ele['database_name'];
+                        table_row.appendChild(database_name);
+
+                        let table_name = document.createElement('td');
+                        table_name.innerHTML = ele['table_name'];
+                        table_row.appendChild(table_name);
+
+                        let column_name = document.createElement('td');
+                        column_name.setAttribute('id', `column_name-${column_id}`);
+                        column_name.innerHTML = ele['column_name'];
+                        table_row.appendChild(column_name);
+
+                        let custom_name = document.createElement('td');
+                        custom_name.innerHTML = `<input type="text" maxlength="80px" class="form-control" placeholder="${ele['custom_name']}" id="custom_name-${column_id}">`;
+                        table_row.appendChild(custom_name);
+
+                        let column_type = document.createElement('td');
+                        column_type.innerHTML = ele['column_type'];
+                        table_row.appendChild(column_type);
+
+                        let column_type_custom = document.createElement('td');
+                        let the_type = {"type_value": null, "type_name": null};
+                        switch (ele['column_type_custom']) {
+                            case null:
+                                the_type["type_value"] = 0;
+                                break;
+                            case 0:
+                                the_type["type_name"] = "文本";
+                                the_type["type_value"] = 0;
+                                break;
+                            case 1:
+                                the_type["type_name"] = '数值';
+                                the_type["type_value"] = 1;
+                                break;
+                            case 2:
+                                the_type["type_name"] = '时间';
+                                the_type["type_value"] = 2;
+                                break;
+                            default:
+
+                        }
+                        column_type_custom.innerHTML = `<span><select class="form-control" id="column_type_custom-${column_id}"><option value="${the_type['type_value']}" selected>${the_type['type_name']}</option>
+                                                            <option value="0">文本</option><option value="1">数值</option><option value="2">时间</option></select></span>`;
+
+                        table_row.appendChild(column_type_custom);
+
+                        let mark_label = document.createElement('td');
+                        if (ele['mark_label'] === 0) {
+                            mark_label.innerHTML = `<button type="button" class="btn btn-outline-primary"><i class="bi bi-bookmark-star"></i></button>`;
+                        } else {
+                            mark_label.innerHTML = `<button type="button" class="btn btn-success"><i class="bi bi-bookmark-star-fill"></i></button>`;
+                        }
+                        table_row.appendChild(mark_label);
+
+                        let column_modify = document.createElement('td');
+                        column_modify.innerHTML = `<i class="bi bi-pencil-square" id="modify-${column_id}" onclick="modifyColumn(this)"></i>`;
+                        table_row.appendChild(column_modify);
+
+                        the_dom.appendChild(table_row);
+                    }
+                }
+            }
+            xhr.send();
+        }
+
+        getColumns();
+
+        function modifyColumn(obj) {
+            let num = obj.id.match(/\d+/g);
+
+            let column_name = document.getElementById('column_name-' + num).innerText;
+            let custom_name = document.getElementById('custom_name-' + num).value;
+            let column_type_custom = document.getElementById('column_type_custom-' + num).value;
+
+            let data = new FormData();
+            data.append('column_id', num);
+            data.append('column_name', column_name);
+            data.append('custom_name', custom_name);
+            data.append('column_type_custom', column_type_custom);
+
+            let xhr = new XMLHttpRequest();
+            xhr.open('post', '{{ url_for("sql_mapper.modify_column") }}', true);
+            xhr.onreadystatechange = function () {
+                if (xhr.status === 200 && xhr.readyState === 4) {
+                    let resp = JSON.parse(xhr.responseText);
+                    if (resp['status'] === 'success'){
+                        window.alert('修改成功');
+                    }
+                    else {
+                        window.alert('failed: ' + resp['message']);
+                    }
+                }
+            };
+            xhr.send(data);
+            console.log(data);
+
+        }
+    </script>
+{% endblock %}

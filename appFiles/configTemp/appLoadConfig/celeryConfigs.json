@@ -1,0 +1,39 @@
+{
+  "celery_env": "default",
+  "celery_configs": {
+    "celery_task_result_expire": 3600,
+    "celery_result_serializer": "json",
+    "celery_mem": "local",
+    "target_mysql": {
+      "host": "127.0.0.1",
+      "username": "flask_user",
+      "password": "123456",
+      "prot": 3306,
+      "database": "web_data"
+    }
+  },
+  "celery_development_configs": {
+    "celery_task_result_expire": 3600,
+    "celery_result_serializer": "json",
+    "celery_mem": "local",
+    "target_mysql": {
+      "host": "127.0.0.1",
+      "username": "flask_user",
+      "password": "123456",
+      "prot": 3306,
+      "database": "web_data"
+    }
+  },
+  "celery_product_configs": {
+    "celery_task_result_expire": 3600,
+    "celery_result_serializer": "json",
+    "celery_mem": "remote",
+    "target_mysql": {
+      "host": "47.109.80.79",
+      "username": "flask_user",
+      "password": "123456",
+      "prot": 3306,
+      "database": "web_data"
+    }
+  }
+}
