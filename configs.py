@@ -32,14 +32,15 @@ def load_config_file():
     f.close()
 
     _app_config = None
+    print(f'[{datetime.datetime.now()}] App running environment: {configs["app_env"]}')
 
     if configs['app_env'] == 'default':
         _app_config = configs['app_configs']
     elif configs['app_env'] == 'development':
         _app_config = configs['app_development_configs']
-    elif configs['app_env'] == ['production']:
+    elif configs['app_env'] == 'production':
         _app_config = configs['app_production_configs']
-    elif configs['app_env'] == ['test']:
+    elif configs['app_env'] == 'test':
         _app_config = configs['app_test_configs']
 
     env_values = configs['env_values']

@@ -204,20 +204,3 @@ def mark_column(column_id):
         return 'ERROR'
     if result[0]:
         ...
-
-
-@sql_mapper.route('/mapper_relation', methods=['POST'])
-@session_check
-def create_mapper_page_rel():
-    """
-    create a new mapper-page relationship
-    :return:
-    """
-    username = session.get('username')
-    page_id = int(request.form.get('page_id'))
-    mapper_id = int(request.form.get('mapper_id'))
-    user_id = web_db_session.query(UserTab.user_id).filter_by(username=username).first()[0]
-    relation = MapperAndPage(page_id=page_id, mapper_id=mapper_id, create_user=user_id,
-                             create_time=datetime.datetime.now())
-    web_db_session.add(relation)
-    web_db_session.commit()

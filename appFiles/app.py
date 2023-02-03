@@ -4,6 +4,7 @@ from configs import Config
 from appFiles.bluePrint.consolePrints.web_console import web_console
 from appFiles.bluePrint.index_page import index_page
 from appFiles.bluePrint.consolePrints.sql_mapper import sql_mapper
+from appFiles.bluePrint.consolePrints.mapper_page import mapper_page
 from appFiles.bluePrint.consolePrints.test import tes
 from appFiles.appTools.jobs import Aps
 
@@ -15,6 +16,7 @@ def create_app():
     app.register_blueprint(index_page, url_prefix='/')
     app.register_blueprint(sql_mapper, url_prefix='/sql_mapper')
     app.register_blueprint(tes, url_prefix='/test')
+    app.register_blueprint(mapper_page, url_prefix='/mapper_page')
     # Bootstrap(app)
     # login session
     theSession = Session()

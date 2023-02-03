@@ -76,9 +76,14 @@
 
                 </form>
             </div>
-            <button class="btn btn-outline-danger" type="button" style="float: right;margin: 10px"
+            <button class="btn btn-outline-primary" type="button" style="float: right;margin: 10px"
                     onclick="finalSubmit()">查询
             </button>
+            <button class="btn btn-primary" id="mapper-save-btn" type="button" style="float: right; margin: 10px"
+                    hidden="hidden" onclick="">
+                保存
+            </button>
+
         </div>
 
         <div class="col-lg-6" style="height: 100%">
@@ -336,7 +341,8 @@
                         _dom.appendChild(chart_dom);
                         let _myCharts = echarts.init(chart_dom);
                         _myCharts.setOption(data);
-
+                        let save_dom = document.getElementById('mapper-save-btn');
+                        save_dom.removeAttribute('hidden');
 
                     } else {
                         {# 未获取到执行成功信息， 计时器+1，继续自调用 #}
