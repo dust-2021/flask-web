@@ -204,6 +204,7 @@ def account_register():
         reData['message'] = '用户名长度必须在4至64个字符之间'
         return reData
     if web_db_session.query(UserTab.username).filter_by(username=username).first():
+        web_db_session.close()
         reData['message'] = '用户名已存在'
         return reData
     password = request.form.get('password')
@@ -251,6 +252,7 @@ def user_message_state():
     """
     user_id = session.get('user_id')
     resp = web_db_session.query(UserMsg.msg_title).filter_by(receiver_id=user_id, read_state=0).all()
+    web_db_session.close()
     data = {"counts": 0, 'titles': []}
     if len(resp) == 0:
         return jsonify(data)

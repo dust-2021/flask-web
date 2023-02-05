@@ -1,5 +1,5 @@
 {
-  "app_env": "production",
+  "app_env": "development",
   "app_configs": {
     "app_secret_key": "dust2022",
     "session_type": "redis",

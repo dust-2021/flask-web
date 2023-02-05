@@ -21,8 +21,8 @@ def configs_generate():
         celery_conf = _configs.get('celery_configs')
     if _configs.get('celery_env', 'default') == 'development':
         celery_conf = _configs.get('celery_development_configs')
-    if _configs.get('celery_env', 'default') == 'product':
-        celery_conf = _configs.get('celery_product_configs')
+    if _configs.get('celery_env', 'default') == 'production':
+        celery_conf = _configs.get('celery_production_configs')
     redis_account = _account_config.get('redis_conf') if celery_conf.get(
             'celery_mem') == 'remote' else _account_config.get('redis_local_conf')
     return redis_account, celery_conf

@@ -1,5 +1,5 @@
 {
-  "celery_env": "default",
+  "celery_env": "development",
   "celery_configs": {
     "celery_task_result_expire": 3600,
     "celery_result_serializer": "json",
@@ -24,7 +24,7 @@
       "database": "web_data"
     }
   },
-  "celery_product_configs": {
+  "celery_production_configs": {
     "celery_task_result_expire": 3600,
     "celery_result_serializer": "json",
     "celery_mem": "remote",
