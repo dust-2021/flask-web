@@ -231,6 +231,8 @@ class EchartsGenerator:
             'legend': {
 
             },
+            'dataZoom': []
+            ,
             'toolbox': {
                 'show': True,
                 'feature': {
@@ -256,6 +258,14 @@ class EchartsGenerator:
         group_result_name = ['-'.join([str(y) for y in x[:self.info.get('group_column_count')]]) for x in
                              self.data] if group_times else []
         self.opts['xAxis'][0]['data'] = group_result_name
+        if self.data.__len__() >= 15:
+            self.opts['dataZoom'].append({
+                'type': "slider",
+                'show': True,
+                'xAxisIndex': [0],
+                'start': 1,
+                'end': 35
+            })
 
     def generate_data_series(self):
         group_times = self.info.get('group_column_count', 0)

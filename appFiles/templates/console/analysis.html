@@ -233,7 +233,7 @@
             }
         }
 
-        function finalSubmit() {
+        function finalSubmit(store = false) {
             let formData = {"select": [], "target_table": analysis_type, "where": [], "group_by": []};
             let select_box = document.getElementById('select_container').getElementsByTagName('form');
             let condition_box = document.getElementById('condition_container').getElementsByTagName('form');
@@ -294,17 +294,23 @@
                 }
             }
 
-            let xhr = new XMLHttpRequest();
 
-            xhr.open('post', '{{ url_for("sql_mapper.mapper_executor") }}', true);
-            xhr.setRequestHeader('Content-type', 'application/json');
-            xhr.onreadystatechange = function () {
-                if (xhr.status === 200 && xhr.readyState === 4) {
-                    let resp = JSON.parse(xhr.responseText);
-                    taskResult(resp['task_id']);
+            if (~store) {
+                let xhr = new XMLHttpRequest();
+                xhr.open('post', '{{ url_for("sql_mapper.mapper_executor") }}', true);
+                xhr.setRequestHeader('Content-type', 'application/json');
+                xhr.onreadystatechange = function () {
+                    if (xhr.status === 200 && xhr.readyState === 4) {
+                        let resp = JSON.parse(xhr.responseText);
+                        taskResult(resp['task_id']);
+                    }
                 }
+                xhr.send(JSON.stringify(formData));
+            } else {
+
             }
-            xhr.send(JSON.stringify(formData));
+
+
         }
 
 
@@ -313,7 +319,7 @@
             let this_time = times + 1;
             if (this_time === 1) {
                 let box = document.getElementById('echarts-box');
-                box.innerHTML = `<div class="spinner-border" role="status" style="position: center">
+                box.innerHTML = `<div class="spinner-border" role="status" style="margin: auto;top: 0;left: 0;bottom: 0;right: 0">
                                 <span class="sr-only">Loading...</span></div>`
             }
             if (this_time >= 15) {
