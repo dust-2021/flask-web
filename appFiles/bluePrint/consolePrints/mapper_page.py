@@ -13,7 +13,8 @@ from hashlib import md5
 mapper_page = Blueprint('mapper_page', __name__)
 
 
-@mapper_page.route('')
+@mapper_page.route('/page/create', methods=['POST'])
 @session_check
-def page():
-    ...
+def create_page():
+    req = request.form
+

@@ -231,6 +231,14 @@ class EchartsGenerator:
             'legend': {
 
             },
+            'toolbox': {
+                'show': True,
+                'feature': {
+                    'dataView': {'show': True, 'readOnly': True},
+                    'magicType': {'show': True, 'type': ['line', 'bar']},
+                    'restore': {'show': True},
+                    'saveAsImage': {'show': True}
+                }, },
             'xAxis': [{
                 'type': 'category',
                 'data': []

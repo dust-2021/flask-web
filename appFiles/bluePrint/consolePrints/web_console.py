@@ -132,6 +132,16 @@ def login():
 @web_console.route('/simple_login')
 def simple_login():
     session['username'] = 'test_user'
+    user_id = web_db_session.query(UserTab.user_id).filter_by(username='test_user').first()[0]
+    session['user_id'] = user_id
+
+    now = datetime.datetime.now()
+    # X-Real-IP the true ip when use nginx
+    ip = request.headers.get('X-Real-IP', request.remote_addr)
+    user_login = UserLogin(user_id=user_id, ip=ip,
+                           event_time=int(datetime.datetime.timestamp(now)), event_date=now)
+    web_db_session.add(user_login)
+
     return redirect(url_for('web_console.index'))
 
 
