@@ -80,9 +80,35 @@
                     onclick="finalSubmit()">查询
             </button>
             <button class="btn btn-primary" id="mapper-save-btn" type="button" style="float: right; margin: 10px"
-                    hidden="hidden" onclick="">
+                    hidden="hidden" data-toggle="modal" data-target="#mapper-save-modal">
                 保存
             </button>
+
+            <div class="modal fade" id="mapper-save-modal" tabindex="-1" aria-labelledby="mapper-save-btn" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                保存图表
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-inline" id="mapper-store-form">
+                                <label for="mapper-title">标题 </label>
+                                <input class="form-control" type="text" id="mapper-title">
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary">取消</button>
+                            <button type="button" class="btn btn-primary" onclick="finalSubmit(true)">保存</button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
 
         </div>
 
@@ -294,8 +320,8 @@
                 }
             }
 
-
-            if (~store) {
+            console.log(store);
+            if (store === false) {
                 let xhr = new XMLHttpRequest();
                 xhr.open('post', '{{ url_for("sql_mapper.mapper_executor") }}', true);
                 xhr.setRequestHeader('Content-type', 'application/json');
@@ -307,7 +333,16 @@
                 }
                 xhr.send(JSON.stringify(formData));
             } else {
-
+                formData['title'] = document.getElementById('mapper-title').value;
+                let xhr = new XMLHttpRequest();
+                xhr.open('post', '{{ url_for("sql_mapper.store_mapper") }}', true);
+                xhr.setRequestHeader('Content-type', 'application/json');
+                xhr.onreadystatechange = function () {
+                    if (xhr.status === 200 && xhr.readyState === 4) {
+                        window.alert('保存成功');
+                    }
+                }
+                xhr.send(JSON.stringify(formData));
             }
 
 

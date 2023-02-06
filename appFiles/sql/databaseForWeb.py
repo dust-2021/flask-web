@@ -122,9 +122,10 @@ class UserMapper(Base):
     __tablename__ = 'UserMapper'
 
     mapper_id = Column(BigInteger, index=True)
+    mapper_name = Column(VARCHAR(64))
     user_id = Column(BigInteger, index=True)
     create_time = Column(DateTime)
-    mapper_query = Column(Text)
+    mapper_pickle = Column(BLOB)
     mark_level = Column(Integer, default=1)
     id = Column(BigInteger, primary_key=True, autoincrement=True)
 

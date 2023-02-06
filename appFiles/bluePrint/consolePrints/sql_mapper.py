@@ -1,6 +1,7 @@
 """
 api for data analysis and mapper generate
 """
+from sqlalchemy import func
 from flask import session, jsonify, request, Blueprint
 from appFiles.appTools.others import session_check, grant_checker
 from appFiles.sql.databaseForWeb import *
@@ -34,7 +35,24 @@ def mapper():
 @sql_mapper.route('/mapper/store', methods=['POST'])
 @session_check
 def store_mapper():
-    pass
+    resp = {
+        'status': None,
+        'message': None
+    }
+
+    opts = request.json
+    title = opts.get('title')
+    _mapper = SqlMapper(**opts)
+    user_id = session.get('user_id')
+    res = web_db_session.query(func.max(UserMapper.mapper_id)).first()
+    mapper_id = res[0] + 1 if res[0] else 1
+    user_mapper = UserMapper(mapper_id=mapper_id, mapper_name=title, user_id=user_id,
+                             create_time=datetime.datetime.now(), mapper_pickle=_mapper.dump(), mark_level=0)
+    web_db_session.add(user_mapper)
+    web_db_session.commit()
+    web_db_session.close()
+    resp['status'] = 'SUCCESS'
+    return jsonify(resp)
 
 
 @sql_mapper.route('/mapper/mapper_executor', methods=['POST'])
