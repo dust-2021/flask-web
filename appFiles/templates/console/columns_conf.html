@@ -4,11 +4,9 @@
 
 {% block contain %}
     <div class="row full-fill-box">
-        <div class="base-box white-background-ele overflow-auto" style="width: 100%;padding: 30px">
-            <table class="table table-hover" id="columns_table">
-                <caption>
-                    数据设置
-                </caption>
+        <div class="base-box white-background-ele" style="width: 100%;">
+            <div style="height: 5%">asd</div>
+            <table class="table table-hover" id="columns_table" style="">
                 <thead>
                 <tr>
                     <th>
@@ -41,27 +39,34 @@
 
                 </tbody>
             </table>
+            <div style="height: 8%; padding: 0 30px">
+                <ul class="pagination" style="float: right;height: 30px">
+                    <li class="page-item"><a class="page-link">1</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 {% endblock %}
 {% block buttonscript %}
     {{ super() }}
     <script type="text/javascript">
-        function getColumns() {
+        function getColumns(page = 1) {
             let xhr = new XMLHttpRequest();
             let the_dom = document.getElementById('t-body');
-            let columns;
 
-            xhr.open('get', '/sql_mapper/columns', true);
+            xhr.open('get', `/sql_mapper/columns/page/${page}`, true);
             xhr.onreadystatechange = function () {
                 if (xhr.status === 200 && xhr.readyState === 4) {
-                    columns = JSON.parse(xhr.responseText);
+                    let resp = JSON.parse(xhr.responseText);
+                    let columns = resp['data'];
+                    let page_num = resp['all_page'];
                     for (let i = 0; i < columns.length; i++) {
                         let ele = columns[i];
 
                         let column_id = ele['column_id'];
 
                         let table_row = document.createElement('tr');
+                        table_row.setAttribute('style', 'padding:10px 15px');
 
                         let database_name = document.createElement('td');
                         database_name.innerHTML = ele['database_name'];
@@ -149,10 +154,9 @@
             xhr.onreadystatechange = function () {
                 if (xhr.status === 200 && xhr.readyState === 4) {
                     let resp = JSON.parse(xhr.responseText);
-                    if (resp['status'] === 'success'){
+                    if (resp['status'] === 'success') {
                         window.alert('修改成功');
-                    }
-                    else {
+                    } else {
                         window.alert('failed: ' + resp['message']);
                     }
                 }

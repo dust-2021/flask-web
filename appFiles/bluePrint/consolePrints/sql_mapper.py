@@ -13,6 +13,7 @@ from appFiles.celeryProj.celery_task.tasks import celery_mapper_executor, celery
 from celery.result import AsyncResult
 from configs import DataConfig
 from hashlib import md5
+import math
 
 sql_mapper = Blueprint('sql_mapper', __name__)
 
@@ -114,6 +115,23 @@ def columns():
     web_data_session.close()
     resp = [{'database_name': x[0], 'table_name': x[1], 'column_name': x[2], 'custom_name': x[3],
              'column_type': x[4], 'column_type_custom': x[5], 'mark_label': x[6], 'column_id': x[7]} for x in resp]
+    return jsonify(resp)
+
+
+@sql_mapper.route('/columns/page/<int:page_num>')
+@session_check
+def column_page(page_num):
+    resp = web_data_session.query(NameSpace.database_name, NameSpace.table_name, NameSpace.column_name,
+                                  NameSpace.custom_name,
+                                  NameSpace.column_type, NameSpace.column_type_custom, NameSpace.mark_label,
+                                  NameSpace.id).limit(10).offset((page_num - 1) * 10).all()
+    _pages = math.ceil(web_data_session.query(func.count(NameSpace.id)).first()[0] / 10)
+    web_data_session.close()
+    resp = {'all_page': _pages,
+            'data': [{'database_name': x[0], 'table_name': x[1], 'column_name': x[2], 'custom_name': x[3],
+                      'column_type': x[4], 'column_type_custom': x[5], 'mark_label': x[6], 'column_id': x[7]} for x in
+                     resp]}
+
     return jsonify(resp)
 
 
