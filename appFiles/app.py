@@ -6,12 +6,14 @@ from appFiles.bluePrint.index_page import index_page
 from appFiles.bluePrint.consolePrints.sql_mapper import sql_mapper
 from appFiles.bluePrint.consolePrints.mapper_page import mapper_page
 from appFiles.bluePrint.consolePrints.test import tes
+from appFiles.bluePrint.consolePrints.api import app_api
 from appFiles.appTools.jobs import Aps
 
 
 def create_app():
     app = Flask(__name__, template_folder='./templates', static_folder='./static')
     app.config.from_object(Config())
+    app.register_blueprint(app_api, url_prefix='/api')
     app.register_blueprint(web_console, url_prefix='/web_console')
     app.register_blueprint(index_page, url_prefix='/')
     app.register_blueprint(sql_mapper, url_prefix='/sql_mapper')

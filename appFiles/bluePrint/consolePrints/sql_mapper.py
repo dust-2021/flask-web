@@ -18,21 +18,6 @@ import math
 sql_mapper = Blueprint('sql_mapper', __name__)
 
 
-@sql_mapper.route('/mapper', methods=['POST'])
-@session_check
-def mapper():
-    """
-    accept the options of custom data analysis, then return sql query.
-    :return:
-    """
-    opts = request.json
-    the_mapper = SqlMapper(**opts)
-    # conn = redis.Redis(connection_pool=redis_pool)
-    # conn.set()
-    # conn.close()
-    return the_mapper.dump()
-
-
 @sql_mapper.route('/mapper/store', methods=['POST'])
 @session_check
 def store_mapper():
