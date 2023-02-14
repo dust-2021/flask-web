@@ -1,0 +1,29 @@
+{% extends 'console/base.html' %}
+{% block without_left_nav %}
+    <div class="col-lg-4" style="height: 95%">
+        <div class="base-box white-background-ele">
+
+        </div>
+    </div>
+    <div class="col-lg-8" style="height: 95%">
+        <div class="base-box white-background-ele"></div>
+    </div>
+{% endblock %}
+{% block buttonscript %}
+    {{ super() }}
+    <script type="text/javascript">
+        function getMapper() {
+            let xhr = new XMLHttpRequest();
+            xhr.open('get', '{{ url_for("mapper_page_api.select_stored_mapper", mapper_id=-1) }}', true);
+            xhr.onreadystatechange = function () {
+                if (xhr.status === 200 && xhr.readyState === 4) {
+                    console.log(xhr.responseText)
+                }
+            }
+            xhr.send();
+        }
+
+        getMapper();
+
+    </script>
+{% endblock %}

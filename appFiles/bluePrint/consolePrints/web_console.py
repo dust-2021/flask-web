@@ -43,6 +43,17 @@ def analysis():
     return render_template('console/analysis.html')
 
 
+@web_console.route('/page_make')
+@session_check
+@grant_checker(4)
+def page_make():
+    """
+
+    :return:
+    """
+    return render_template('console/page_make.html')
+
+
 @web_console.route('/analysis/event')
 @grant_checker(0)
 def analysis_event():

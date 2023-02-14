@@ -118,6 +118,8 @@ class UserMsg(Base):
 class UserMapper(Base):
     """
     store Sql query of user data analysis
+    mapper_pickle store the dumped class of SqlMapper.
+    mark level 1 means normal, 2 mean important, 3 mean public
     """
     __tablename__ = 'UserMapper'
 
