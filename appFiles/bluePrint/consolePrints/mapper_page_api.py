@@ -41,8 +41,8 @@ def select_stored_mapper(mapper_id):
         resp['message'] = '错误编号'
         return jsonify(resp)
     if mapper_id == 0:
-        res = web_db_session.query(UserMapper.mapper_id, UserMapper.mapper_name).filter_by(
-            or_(user_id=session.get('user_id'), mark_level=3)).all()
+        res = web_db_session.query(UserMapper.mapper_id, UserMapper.mapper_name).filter(
+            or_(UserMapper.user_id == session.get('user_id'), UserMapper.mark_level == 3)).all()
         web_db_session.close()
         resp['data'] = [list(x) for x in res]
         resp['status'] = 'SUCCESS'
