@@ -14,6 +14,7 @@ from celery.result import AsyncResult
 from configs import DataConfig
 from hashlib import md5
 import math
+from sqlalchemy import and_
 
 sql_mapper = Blueprint('sql_mapper', __name__)
 
@@ -35,6 +36,21 @@ def store_mapper():
     user_mapper = UserMapper(mapper_id=mapper_id, mapper_name=title, user_id=user_id,
                              create_time=datetime.datetime.now(), mapper_pickle=_mapper.dump(), mark_level=0)
     web_db_session.add(user_mapper)
+    web_db_session.commit()
+    web_db_session.close()
+    resp['status'] = 'SUCCESS'
+    return jsonify(resp)
+
+
+@sql_mapper.route('/mapper/delete/<int:mapper_id>')
+@session_check
+def delete_mapper(mapper_id):
+    resp = {
+        'status': None,
+        'message': None
+    }
+    user_id = session.get('user_id')
+    web_db_session.query().filter_by(and_(mapper_id=mapper_id, user_id=user_id)).delete()
     web_db_session.commit()
     web_db_session.close()
     resp['status'] = 'SUCCESS'
