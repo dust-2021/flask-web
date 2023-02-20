@@ -1,13 +1,17 @@
 {% extends 'console/base.html' %}
+{% block head %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='css/page_make.css') }}" type="text/css" rel="stylesheet">
+{% endblock %}
 {% block without_left_nav %}
     <div class="col-lg-4" style="height: 95%">
         <div class="base-box white-background-ele">
-            <div style="height: 40%">
-
+            <div style="height: 40%" id="mapper-container">
+                图表
             </div>
 
             <div style="height: 60%">
-
+                画板
             </div>
         </div>
     </div>
@@ -23,7 +27,20 @@
             xhr.open('get', '{{ url_for("mapper_page_api.select_stored_mapper", mapper_id=0) }}', true);
             xhr.onreadystatechange = function () {
                 if (xhr.status === 200 && xhr.readyState === 4) {
-                    console.log(xhr.responseText)
+                    let data = JSON.parse(xhr.responseText);
+                    console.log(data)
+                    if (data['status'] === 'FAILED') {
+                        console.log(data['message']);
+                        return;
+                    }
+                    let dom = document.getElementById('mapper-container');
+                    for (const item in data['data']) {
+                        let ele = document.createElement('div');
+                        console.log(item);
+                        ele.setAttribute('id', id);
+                        ele.innerText = name;
+                        dom.appendChild(ele);
+                    }
                 }
             }
             xhr.send();
