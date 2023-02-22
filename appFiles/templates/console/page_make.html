@@ -5,15 +5,13 @@
 {% endblock %}
 {% block without_left_nav %}
     <div class="col-lg-4" style="height: 95%">
-        <div class="base-box white-background-ele">
-            <div style="height: 40%" id="mapper-container">
+        <div class="base-box white-background-ele" id="drag-container">
+            <div style="height: 40%;padding: 10px 5% 20px;" id="mapper-container">
                 <div><span>图表</span></div>
-                <a class="btn btn-outline-primary mapper-item" draggable="true">
-                    123</a>
 
             </div>
 
-            <div style="height: 60%">
+            <div style="height: 60%;padding: 10px 5% 20px;" ondragenter="" ondragover="" ondrop="" aria-dropeffect="copy">
                 画板
             </div>
         </div>
@@ -38,8 +36,13 @@
                     let dom = document.getElementById('mapper-container');
                     let i = 0;
                     while (data['data'][i]) {
-                        let ele = document.createElement('div');
+                        let ele = document.createElement('a');
+
                         ele.setAttribute('id', data['data'][i][0]);
+                        ele.setAttribute('class', 'btn btn-light mapper-item');
+                        ele.setAttribute('draggable', 'true');
+                        ele.setAttribute('ondragstart', 'drag(event)');
+
                         ele.innerText = data['data'][i][1];
                         dom.appendChild(ele);
                         i++;
@@ -50,6 +53,14 @@
         }
 
         getMapper();
+
+
+        function drag(ev) {
+            ev.dataTransfer.setData('Text', ev.dataTransfer.id);
+        }
+        function dragover() {
+
+        }
 
     </script>
 {% endblock %}
