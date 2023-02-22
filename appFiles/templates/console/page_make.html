@@ -7,7 +7,10 @@
     <div class="col-lg-4" style="height: 95%">
         <div class="base-box white-background-ele">
             <div style="height: 40%" id="mapper-container">
-                图表
+                <div><span>图表</span></div>
+                <a class="btn btn-outline-primary mapper-item" draggable="true">
+                    123</a>
+
             </div>
 
             <div style="height: 60%">
@@ -28,18 +31,18 @@
             xhr.onreadystatechange = function () {
                 if (xhr.status === 200 && xhr.readyState === 4) {
                     let data = JSON.parse(xhr.responseText);
-                    console.log(data)
                     if (data['status'] === 'FAILED') {
                         console.log(data['message']);
                         return;
                     }
                     let dom = document.getElementById('mapper-container');
-                    for (const item in data['data']) {
+                    let i = 0;
+                    while (data['data'][i]) {
                         let ele = document.createElement('div');
-                        console.log(item);
-                        ele.setAttribute('id', id);
-                        ele.innerText = name;
+                        ele.setAttribute('id', data['data'][i][0]);
+                        ele.innerText = data['data'][i][1];
                         dom.appendChild(ele);
+                        i++;
                     }
                 }
             }
